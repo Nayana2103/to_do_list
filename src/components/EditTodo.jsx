@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
 
-const EditTodo = ({ task, updateTask }) => {
+const EditTodo = ({ task, index, updateTask }) => {
   const [value, setValue] = useState(task.task);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (value.trim() === '') return;
-    updateTask(task.id, value);
+    updateTask(index, value);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 p-2 bg-gray-100 rounded-lg w-full">
+    <form onSubmit={handleSubmit} className="flex gap-2 w-full p-2 border border-gray-300 rounded-xl shadow-md bg-white">
       <input
         type="text"
+        className="flex-grow px-2 py-1 border rounded"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="flex-grow px-2 py-1 border border-gray-300 rounded"
       />
-      <button type="submit" className="bg-green-600 text-white px-3 rounded">
-        Save
+      <button onClick={handleSubmit} type="submit" className="bg-yellow-500 px-3 text-white rounded">
+        Update
       </button>
     </form>
   );
 };
 
 export default EditTodo;
+

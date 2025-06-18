@@ -1,62 +1,32 @@
-{/*import React, { useState,useEffect} from 'react'
-import Form from './Form'
-import {v4 as uuidv4} from 'uuid'
-uuidv4();
-import Todo from './Todo'
-
-const Card = () => {
-
- const[todos,setTodos]=useState([])
- const addTodo= todo=>{
-    setTodos([...todos, {id:uuidv4(), task: todo, completed: false, isEditing:false}])
-    
-  }
-  useEffect(() => {
-    console.log('Todos updated:', todos);
-  }, [todos]);
-
-  return (
-    <div className='bg-white  flex flex-col gap-y-2 justify-start items-center w-[360px] h-[360px]  shadow-2xl rounded-3xl p-4'>
-      <h1 className='font-extrabold text-lg'>To-Do-List</h1>
-      <Form addTodo={addTodo}/>
-      {todos.map((todo,index)=>(
-          <Todo task={todo} key={index}/>
-      ))}
-     
-    </div>
-  )
-}
-
-export default Card;*/}
 import React, { useState, useEffect } from 'react';
 import Form from './Form';
-import { v4 as uuidv4 } from 'uuid';
 import Todo from './Todo';
 import EditTodo from './EditTodo';
 const Card = () => {
   const [todos, setTodos] = useState([]);
 
   const addTodo = (task) => {
-    if (task.trim() === '') return;
-    setTodos([...todos, { id: uuidv4(), task, completed: false, isEditing: false }]);
+    setTodos([...todos, { task, completed: false, isEditing: false }]);
   };
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const deleteTodo = (indexToDelete) => {
+    setTodos(todos.filter((_, index) => index !== indexToDelete));
   };
 
-  const editTodo = (id) => {
+  const editTodo = (indexToEdit) => {
     setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, isEditing: !todo.isEditing } : todo
+      todos.map((todo, index) =>
+        index === indexToEdit ? { ...todo, isEditing: true } : todo
       )
     );
   };
 
-  const updateTask = (id, newTask) => {
+  const updateTask = (indexToUpdate, newTask) => {
     setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, task: newTask, isEditing: false } : todo
+      todos.map((todo, index) =>
+        index === indexToUpdate
+          ? { ...todo, task: newTask, isEditing: false }
+          : todo
       )
     );
   };
@@ -68,18 +38,15 @@ const Card = () => {
   return (
     <div className="bg-white flex flex-col gap-y-2 justify-start items-center w-[360px] min-h-[400px] shadow-2xl rounded-3xl p-4">
       <h1 className="font-extrabold text-lg">To-Do List</h1>
-      <Form addTodo={addTodo} />
-      <div className="w-full flex flex-col gap-2">
-        {todos.map((todo) =>
+      <div className="w-full px-2">
+        <Form addTodo={addTodo} />
+      </div>
+      <div className="w-full px-2 flex flex-col gap-2">
+        {todos.map((todo, index) =>
           todo.isEditing ? (
-            <EditTodo key={todo.id} task={todo} updateTask={updateTask} />
+            <EditTodo key={index} task={todo} index={index} updateTask={updateTask} />
           ) : (
-            <Todo
-              key={todo.id}
-              task={todo}
-              deleteTodo={deleteTodo}
-              editTodo={editTodo}
-            />
+            <Todo key={index} task={todo} index={index} deleteTodo={deleteTodo} editTodo={editTodo} />
           )
         )}
       </div>
@@ -88,4 +55,5 @@ const Card = () => {
 };
 
 export default Card;
+
 
